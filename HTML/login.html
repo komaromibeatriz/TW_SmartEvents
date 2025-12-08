@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login – Smart Events</title>
+<link rel="stylesheet" href="../CSS/style.css">
+<link rel="stylesheet" href="../CSS/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <form id="loginForm" class="login-form">
+
+      <h1 class="app-title">Smart Events</h1>
+      <h2>Login</h2>
+
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+
+      <select id="role" required>
+        <option value="">Select the role</option>
+        <option value="organizer">Organizer</option>
+        <option value="participant">User</option>
+      </select>
+
+      <button type="submit">Login</button>
+
+      <p class="register-text">
+        Need to create an account? <a href="register.html">Register</a>
+      </p>
+    </form>
+  </div>
+
+  <script src="../JS/login.js"></script>
+</body>
+</html>
