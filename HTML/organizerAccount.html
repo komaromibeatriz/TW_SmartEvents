@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Organzier account</title>
+  <title>Organizer account</title>
   <link rel="stylesheet" href="../CSS/style.css">
   <link rel="stylesheet" href="../CSS/organizerAccount.css">
 </head>
 <body>
+  <header class="top-header">
+  <h2>Organizer Panel</h2>
+  <a href="login.html" class="logout-btn">Logout</a>
+</header>
 
   <main class="page">
     <section class="card">
@@ -16,17 +20,17 @@
       <div class="row">
         <label>Name</label>
         <input id="profile_name" type="text" value="Name" readonly>
-    </div>
+      </div>
 
-    <div class="row">
+      <div class="row">
         <label>Username</label>
         <input id="profile_username" type="text" value="organizer" readonly>
-    </div>
+      </div>
 
-    <div class="row">
+      <div class="row">
         <label>Description</label>
         <textarea id="profile_bio" rows="3" readonly></textarea>
-    </div>
+      </div>
 
       <div class="actions">
         <button id="editProfileBtn" class="btn">Change profile details</button>
@@ -48,5 +52,6 @@
 
   <script src="../JS/createEvent.js"></script>
   <script src="../JS/profile.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explorare Evenimente</title>
+
+<link rel="stylesheet" href="../CSS/style.css">
+
+<style>
+.tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:14px;
+}
+.tab{
+    padding:8px 14px;
+    border:1px solid #79BAEC;
+    border-radius:20px;
+    cursor:pointer;
+}
+.tab.active{
+    background:#4682B4;
+}
+.hidden{display:none;}
+
+.apply-btn{
+    margin-top:8px;
+    padding:6px 12px;
+    border-radius:6px;
+    background:#79BAEC;
+    cursor:pointer;
+}
+.apply-btn.cancel{
+    background:#c0392b;
+}
+</style>
+</head>
+<body>
+
+<main class="page">
+
+<section class="card">
+
+<h1>Explore Events & Organizers</h1>
+
+<div class="tabs">
+    <div class="tab active" data-tab="events">Events</div>
+    <div class="tab" data-tab="my">My Applications</div>
+    <div class="tab" data-tab="searchEvent">Search Event</div>
+    <div class="tab" data-tab="searchOrg">Search Organizer</div>
+</div>
+
+
+<div id="events" class="tab-content">
+    <ul id="eventsGrid" class="events-grid"></ul>
+</div>
+
+
+<div id="my" class="tab-content hidden">
+    <h3>Events you are enrolled in</h3>
+    <ul id="myList" class="event-list"></ul>
+</div>
+
+
+<div id="searchEvent" class="tab-content hidden">
+    <input type="text" id="search" placeholder="Search…" />
+    <ul id="result" class="event-list"></ul>
+</div>
+
+
+<div id="searchOrg" class="tab-content hidden">
+    <input type="text" id="searchOrg" placeholder="Search name / username" />
+    <ul id="list" class="event-list"></ul>
+</div>
+
+
+
+</section>
+</main>
+
+
+
+<script>
+
+let events = JSON.parse(localStorage.getItem("myEvents")) || [];
+let orgs   = JSON.parse(localStorage.getItem("organizers")) || [];
+
+let myApps = JSON.parse(localStorage.getItem("userApplications")) || [];
+
+
+
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.onclick = () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
+
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.remove("hidden");
+
+        if(tab.dataset.tab === "my") renderMy();
+
+    };
+});
+
+
+function toggleApply(id){
+
+    if(myApps.includes(id)){
+        myApps = myApps.filter(x => x !== id); // unapply
+    } else {
+        myApps.push(id); // apply
+    }
+
+    localStorage.setItem("userApplications", JSON.stringify(myApps));
+
+    renderEvents();
+    renderMy();
+}
+
+
+
+function renderEvents(){
+    const grid = document.getElementById("eventsGrid");
+    grid.innerHTML = "";
+
+    events.forEach((evt,i) => {
+
+        const applied = myApps.includes(i);
+
+        grid.innerHTML += `
+        <li class="event-item">
+            <div class="event-title">${evt.title}</div>
+            <div class="event-meta">${evt.category}</div>
+            <div>📅 ${evt.date} • ⏰ ${evt.time} • 📍 ${evt.location}</div>
+            <p>${evt.description}</p>
+
+            <div class="apply-btn ${applied?'cancel':''}"
+                 onclick="toggleApply(${i})">
+
+                 ${applied ? "Cancel application" : "Apply"}
+            </div>
+        </li>
+        `;
+    });
+}
+
+
+function renderMy(){
+    const box = document.getElementById("myList");
+    box.innerHTML="";
+
+    if(myApps.length === 0){
+        box.innerHTML = "<li>You are not enrolled in any event.</li>";
+        return;
+    }
+
+    myApps.forEach(id => {
+        const evt = events[id];
+
+        box.innerHTML += `
+        <li class="event-item">
+            <div class="event-title">${evt.title}</div>
+            <div>${evt.date} • ${evt.location}</div>
+        </li>`;
+    });
+}
+
+
+
+document.getElementById("search").addEventListener("input", e => {
+    const q = e.target.value.toLowerCase();
+
+    const filtered = events.filter(evt =>
+        evt.title.toLowerCase().includes(q) ||
+        evt.category.toLowerCase().includes(q) ||
+        evt.location.toLowerCase().includes(q)
+    );
+
+    renderSearchResult(filtered);
+});
+
+
+function renderSearchResult(data){
+    const box = document.getElementById("result");
+    box.innerHTML = "";
+
+    data.forEach(evt => {
+        box.innerHTML += `
+        <li class="event-item">
+            <div class="event-title">${evt.title}</div>
+            <div>${evt.date} • ${evt.time} • ${evt.location}</div>
+        </li>`;
+    });
+}
+
+
+
+document.getElementById("searchOrg").addEventListener("input", e => {
+    const q = e.target.value.toLowerCase();
+
+    const filtered = orgs.filter(o =>
+        o.name.toLowerCase().includes(q) ||
+        o.username.toLowerCase().includes(q)
+    );
+
+    renderOrg(filtered);
+});
+
+
+function renderOrg(data){
+    const box = document.getElementById("list");
+    box.innerHTML = "";
+
+    data.forEach(o => {
+        box.innerHTML += `
+        <li class="event-item">
+            <div class="event-title">${o.name}</div>
+            <div>${o.username}</div>
+            <p>${o.desc}</p>
+        </li>`;
+    });
+}
+
+
+
+renderEvents();
+
+</script>
+</body>
+</html>
